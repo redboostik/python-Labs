@@ -1,6 +1,7 @@
+import datetime
+
 from django.db import models
 from jsonfield import JSONField
-# Create your models here.
 
 
 class User(models.Model):
@@ -27,10 +28,37 @@ class Event(models.Model):
     subscribers = JSONField(
         verbose_name='subscribers IDs',
     )
+
+    date = models.DateTimeField(
+        verbose_name='event start date',
+        default=datetime.datetime.today() + datetime.timedelta(days=1)
+    )
+
     owner_ID = models.PositiveIntegerField(
         verbose_name='owner ID',
     )
 
-
     class Meta:
         verbose_name = 'Event model'
+
+
+class ActiveEvents(models.Model):
+    owner_ID = models.PositiveIntegerField(
+        verbose_name='owner ID',
+    )
+
+    event_ID = models.PositiveIntegerField(
+        verbose_name='event ID',
+    )
+
+    class Meta:
+        verbose_name = 'Active event'
+
+
+class ActiveCommand(models.Model):
+    user_ID = models.PositiveIntegerField(
+        verbose_name='user ID',
+    )
+    command = models.TextField(
+        verbose_name='last command'
+    )

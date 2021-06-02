@@ -18,8 +18,25 @@ class EventForm(forms.ModelForm):
     class Meta:
         model = Event
         fields = (
-            'name', 'description', 'owner_ID', 'subscribers',
+            'name', 'description', 'date', 'owner_ID', 'subscribers',
         )
         widgets = {
             'name': forms.TextInput,
         }
+
+
+class ActiveEventsForm(forms.ModelForm):
+    class Meta:
+        model = ActiveEvents
+        fields = (
+            'event_ID', 'owner_ID',
+        )
+
+
+class ActiveCommandForm(forms.ModelForm):
+    class Meta:
+        model = ActiveCommand
+        fields = (
+            'user_ID', 'command',
+        )
+
