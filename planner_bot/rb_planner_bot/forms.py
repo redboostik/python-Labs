@@ -40,3 +40,10 @@ class ActiveCommandForm(forms.ModelForm):
             'user_ID', 'command',
         )
 
+
+class NotificationForm(forms.ModelForm):
+    class Meta:
+        model = Notifications
+        fields = (
+            'title', 'event_ID', 'owner_ID', 'date',
+        )

@@ -26,3 +26,9 @@ class ActiveEventAdmin(admin.ModelAdmin):
 class ActiveEventAdmin(admin.ModelAdmin):
     list_display = ('id', 'user_ID', 'command')
     form = ActiveCommandForm
+
+
+@admin.register(Notifications)
+class ActiveEventAdmin(admin.ModelAdmin):
+    list_display = ('title', 'owner_ID', 'event_ID', 'date')
+    form = NotificationForm

@@ -9,7 +9,7 @@ class User(models.Model):
         verbose_name='user telegram ID',
         unique=True,
     )
-    name=models.TextField(
+    name = models.TextField(
         verbose_name='user full name',
     )
 
@@ -62,3 +62,27 @@ class ActiveCommand(models.Model):
     command = models.TextField(
         verbose_name='last command'
     )
+
+
+class Notifications(models.Model):
+
+    title = models.TextField(
+        verbose_name='title',
+        default='title'
+    )
+
+    owner_ID = models.PositiveIntegerField(
+        verbose_name='owner ID',
+    )
+
+    event_ID = models.PositiveIntegerField(
+        verbose_name='event ID',
+    )
+
+    date = models.DateTimeField(
+        verbose_name='notification date',
+        default=datetime.datetime.today() + datetime.timedelta(days=1)
+    )
+
+    class Meta:
+        verbose_name = 'Notification'
