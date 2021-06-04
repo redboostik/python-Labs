@@ -1,6 +1,8 @@
 from rb_planner_bot.models import *
 from telegram import Update
 from telegram.ext import CallbackContext
+from .notifications import send_message
+import re
 
 
 def send_text(update: Update, text: str):
@@ -107,7 +109,7 @@ def set_description(update: Update, context: CallbackContext):
 def set_datetime(update: Update, context: CallbackContext):
     update_user(update)
     add_command(update, "setdatetime")
-    send_text(update, 'Enter event (format: "day-month-year-hours-minutes"))')
+    send_text(update, 'Enter datetime (format: "day-month-year-hours-minutes"))')
 
 
 def add_subscribers(update: Update, context: CallbackContext):
@@ -144,8 +146,32 @@ def view_my_events(update: Update, context: CallbackContext):
     update_user(update)
     ans = ''
     for event in Event.objects.filter(owner_ID=update.message.chat_id):
-        ans += str(event.id) + '\n' + event.name + '\n' + event.description + '\n' + event.date.strftime('%d-%m-%Y-%H-%M') \
-               + '\n' + str(event.subscribers) + '\n\n'
+        ans += str(event.id) + '\n' + event.name + '\n' + event.description + '\n' + \
+               event.date.strftime('%d-%m-%Y-%H-%M') + '\n' + str(event.subscribers) + '\n\n'
+    send_text(update, ans)
+
+
+def view_my_notifications(update: Update, context: CallbackContext):
+    update_user(update)
+    ans = ''
+    for notif in Notifications.objects.filter(owner_ID=update.message.chat_id):
+        event = Event.objects.get(id=notif.event_ID)
+        ans += str(notif.id) + '\n' + notif.title + '\n' + event.name + '\n' + event.description + '\n' \
+                   + notif.date.strftime('%d-%m-%Y-%H-%M') + '\n' + '\n\n '
+    send_text(update, ans)
+
+
+def set_datetime_notification_by_id(update: Update, context: CallbackContext):
+    update_user(update)
+    add_command(update, "setdatetimenotificationbyid")
+    ans = 'Enter notification id and datetime (format: "day-month-year-hours-minutes"))'
+    send_text(update, ans)
+
+
+def set_title_notification_by_id(update: Update, context: CallbackContext):
+    update_user(update)
+    add_command(update, "settitlenotificationbyid")
+    ans = 'Enter notification id and title'
     send_text(update, ans)
 
 
@@ -179,15 +205,32 @@ def message_handler(update: Update, context: CallbackContext):
         event.date = datetime.datetime.strptime(text, '%d-%m-%Y-%H-%M')
         event.save()
         send_text(update, 'event datetime updated')
+        for item in Notifications.objects.filter(event_ID=event.id):
+            send_message(item.owner_ID,
+                         "Notification {}\nEvent date '{}' changed\n{}".format(item.title, event.name, str(event.date)))
     elif active_command.command == 'addsubscribers':
         event = Event.objects.get(id=act_event.event_ID)
         event.subscribers.append(int(text))
         __create_notification(event, int(text))
+        send_message(int(text), 'You added to event "{}"'.format(event.name))
         event.save()
         send_text(update, 'added subscriber')
     elif active_command.command == 'deletesubscribers':
         event = Event.objects.get(id=act_event.event_ID)
         event.subscribers.remove(int(text))
         __delete_notification(event, int(text))
+        send_message(int(text), 'You was deleted from event "{}"'.format(event.name))
         event.save()
         send_text(update, 'subscriber deleted')
+    elif active_command.command == 'setdatetimenotificationbyid':
+        reg = re.match('(\d+) (\S+)', text, )
+        notif = Notifications.objects.get(id=int(reg[1]))
+        notif.date = datetime.datetime.strptime(str(reg[2]), '%d-%m-%Y-%H-%M')
+        notif.save()
+        send_text(update, 'notification datetime updated')
+    elif active_command.command == 'settitlenotificationbyid':
+        reg = re.match('(\d+) (\S+)', text)
+        notif = Notifications.objects.get(id=int(reg[1]))
+        notif.title = str(reg[2])
+        notif.save()
+        send_text(update, 'notification title updated')
