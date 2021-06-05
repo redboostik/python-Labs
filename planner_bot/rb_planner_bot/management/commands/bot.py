@@ -7,7 +7,7 @@ from telegram.ext import MessageHandler
 from telegram.ext import CommandHandler
 from telegram.ext import Updater
 from telegram.utils.request import Request
-from .commands import *
+from rb_planner_bot.management.commands.commands import *
 from .notifications import check_notifications
 
 

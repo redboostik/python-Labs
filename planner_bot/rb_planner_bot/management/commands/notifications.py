@@ -1,10 +1,5 @@
-from django.core.management.base import BaseCommand
 from django.conf import settings
 from telegram import Bot
-from telegram.ext import Filters
-from telegram.ext import MessageHandler
-from telegram.ext import CommandHandler
-from telegram.ext import Updater
 from telegram.utils.request import Request
 from .commands import *
 from datetime import timezone
@@ -22,6 +17,7 @@ bot = Bot(
 
 def send_message(user_id: int, message: str):
     bot.sendMessage(str(user_id), message)
+    bot.request
 
 
 def check_notifications():
@@ -35,6 +31,8 @@ def check_notifications():
                                                                          event.description, str(event.date)))
         event = Event.objects.order_by('date').first()
         if event is not None and event.date <= datetime.datetime.now(timezone.utc):
+            for item in event.subscribers:
+                send_message(int(item),
+                             'event starting now\n\n{}\n{}\n{}\n'.format(event.name, event.description, str(event.date)))
             Event.objects.get(id=event.id).delete()
-            send_message(event.owner_ID,
-                         'event starting now\n\n{}\n{}\n{}\n'.format(event.name, event.description, str(event.date)))
+

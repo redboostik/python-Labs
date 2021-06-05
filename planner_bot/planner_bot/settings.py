@@ -130,4 +130,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 TOKEN = '1841972376:AAFJmkWTyrlaWdaZgXfXfSARrCE8D0lIouI'
 
+USER_ID = '396671517'
+
 PROXY_URL = 'https://api.telegram.org/bot'
