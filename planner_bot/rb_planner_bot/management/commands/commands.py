@@ -1,3 +1,5 @@
+import json
+
 from rb_planner_bot.models import *
 from telegram import Update
 from telegram.ext import CallbackContext
@@ -27,7 +29,7 @@ def create_event(update: Update, context: CallbackContext):
         owner_ID=update.message.chat_id,
         name='Event',
         description='description',
-        subscribers=[update.message.chat_id],
+        subscribers=[update.message.chat_id, ],
         date=datetime.datetime.today() + datetime.timedelta(days=1)
     )
     __open_event(update, event.id)
@@ -223,7 +225,9 @@ def message_handler(update: Update, context: CallbackContext):
 
     elif active_command.command == 'addsubscribers':
         event = Event.objects.get(id=act_event.event_ID)
-        event.subscribers.append(int(text))
+        obj = json.loads(event.subscribers)
+        obj.append(int(text))
+        event.subscribers = obj
         event.save()
         __create_notification(event, int(text))
         if is_testing:
@@ -232,7 +236,9 @@ def message_handler(update: Update, context: CallbackContext):
         send_text(update, 'added subscriber')
     elif active_command.command == 'deletesubscribers':
         event = Event.objects.get(id=act_event.event_ID)
-        event.subscribers.remove(int(text))
+        obj = json.loads(event.subscribers)
+        obj.remove(int(text))
+        event.subscribers = obj
         event.save()
         __delete_notification(event, int(text))
         if is_testing:

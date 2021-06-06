@@ -3,6 +3,7 @@ from telegram import Bot
 from telegram.utils.request import Request
 from .commands import *
 from datetime import timezone
+import json
 
 request = Request(
     connect_timeout=5,
@@ -30,8 +31,10 @@ def check_notifications():
                          'event {} starting soon\n\n{}\n{}\n{}\n'.format(notif.title, event.name,
                                                                          event.description, str(event.date)))
         event = Event.objects.order_by('date').first()
+
         if event is not None and event.date <= datetime.datetime.now(timezone.utc):
-            for item in event.subscribers:
+            for item in json.loads(event.subscribers[1:-1]):
+                print(item)
                 send_message(int(item),
                              'event starting now\n\n{}\n{}\n{}\n'.format(event.name, event.description, str(event.date)))
             Event.objects.get(id=event.id).delete()

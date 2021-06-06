@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-4_k8*3)w!r(-z01$a8!(r-eq0$h!l$b06#1@^0z7dguq^g7ow9
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['0.0.0.0']
 
 
 # Application definition
@@ -79,8 +79,12 @@ WSGI_APPLICATION = 'planner_bot.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'botdb',
+        'USER': 'bot',
+        'PASSWORD': 'postgres',
+        'HOST': 'db',
+        'PORT': 5432,
     }
 }
 
