@@ -10,7 +10,7 @@ services:
       - POSTGRES_USER=bot
       - POSTGRES_PASSWORD=postgres
   bot:
-    build: .
+    image: redboostik/plannerbot:v1.0
     command: bash -c "
        chmod +x ./wait-postgres.sh
        ./wait-postgres.sh &&
