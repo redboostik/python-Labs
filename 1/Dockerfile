@@ -1,5 +1,9 @@
 FROM python:3-onbuild
-EXPOSE 5000
+
+RUN mkdir -p / home/workdir/apps
+COPY . /home/workdir/apps
+WORKDIR /home/workdir/apps
+
 CMD ["python3", "./1.py"]
 
 

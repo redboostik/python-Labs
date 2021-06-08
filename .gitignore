@@ -1,0 +1,9 @@
+
+planner_bot/.idea/
+planner_bot/__pycache__
+planner_bot/planner_bot/__pycache__
+planner_bot/rb_planner_bot/__pycache__
+planner_bot/rb_planner_bot/management/__pycache__
+planner_bot/rb_planner_bot/management/commands/__pycache__
+planner_bot/rb_planner_bot/migrations/__pycache__
+planner_bot/venv

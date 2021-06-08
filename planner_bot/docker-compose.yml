@@ -1,0 +1,25 @@
+version: "3.3"
+
+services:
+  db:
+    image: postgres
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=botdb
+      - POSTGRES_USER=bot
+      - POSTGRES_PASSWORD=postgres
+  bot:
+    image: redboostik/plannerbot:v1.0
+    command: bash -c "
+       chmod +x ./wait-postgres.sh
+       ./wait-postgres.sh &&
+       python manage.py migrate &&
+       python manage.py bot"
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    restart: always
